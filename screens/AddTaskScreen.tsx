@@ -13,21 +13,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import { ITask } from '../models/ITask';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import {addTaskSlice} from '../store/reducers/addTaskSlice';
+import { addTaskSlice } from '../store/reducers/addTaskSlice';
+
 
 
 
 export default function AddTaskScreen({ navigation }) {
-    // const {isChangeable, isComplete, title, description} = useAppSelector(state => state.addTaskReducer)
-    // const {setChangeable, setComplete, setTitle, setDescription} = addTaskSlice.actions 
-    // const dispatch = useAppDispatch
-
-
-    // Hooks
-    const [isComplete, setComplete] = useState(false);
-    const [isChangeable, setChangeable] = useState(true);
-    const [title, setTitle] = useState('')
-    const [description, setDescription] = useState('')
+    const {title, description, isComplete, isChangeable} = useAppSelector(state => state.addTaskReducer)
+    const {setTitle, setDescription, setComplete, setChangeable} = addTaskSlice.actions
+    const dispatch = useAppDispatch()
 
     // Add task to storage 
     const storeData = async () => {
@@ -61,20 +55,20 @@ export default function AddTaskScreen({ navigation }) {
                 <TextInput
                     placeholder='Input title'
                     style={styles.text}
-                    onChangeText={(newText) => (setTitle(newText))} />
+                    onChangeText={(newText) => dispatch(setTitle(newText))} />
             </View>
             <View style={styles.description}>
                 <TextInput
                     placeholder='Input description'
                     style={styles.text}
                     multiline={true}
-                    onChangeText={(newText) => (setDescription(newText))} />
+                    onChangeText={(newText) => dispatch(setDescription(newText))} />
             </View>
             <View style={styles.section}>
                 <Checkbox
                     style={styles.checkbox}
                     value={isComplete}
-                    onValueChange={(setComplete)}
+                    onValueChange={(value) => dispatch(setComplete(value))}
                     color={isComplete ? '#8D99AE' : undefined} />
                 <Text style={styles.text}>Completed</Text>
             </View>
@@ -82,7 +76,7 @@ export default function AddTaskScreen({ navigation }) {
                 <Checkbox
                     style={styles.checkbox}
                     value={isChangeable}
-                    onValueChange={(setChangeable)}
+                    onValueChange={(value) => dispatch(setChangeable(value      ))}
                     color={isChangeable ? '#8D99AE' : undefined} />
                 <Text style={styles.text}>Changeable</Text>
             </View>

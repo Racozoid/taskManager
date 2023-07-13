@@ -10,25 +10,22 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useAppDispatch, useAppSelector } from '../hooks/redux';
+import {editTaskSlice} from '../store/reducers/editTaskSlice';
 
 
 export default function Task({ route, navigation }) {
-    const [task, setTask] = useState({
-        id: '',
-        title: '',
-        description: '',
-        changable: true,
-        date: '',
-        completed: true,
-    })
-    const taskId = route.params
+    const task = useAppSelector(state => state.editTaskReducer)
+    const {setTitle, setDescription, setComplete, setAll} = editTaskSlice.actions
+    const dispatch = useAppDispatch();
 
-    
+    const taskId = route.params
 
     const changeCompleteMark = async () => {
         try {
-            setTask({...task, completed: !task.completed})
-            mergeTask()
+            dispatch(setComplete(task.completed))
+            await AsyncStorage.mergeItem(taskId, JSON.stringify(task))
+    
         } catch (e) {
             console.log(e)
         }
@@ -37,6 +34,7 @@ export default function Task({ route, navigation }) {
     const mergeTask = async () => {
         try {
             await AsyncStorage.mergeItem(taskId, JSON.stringify(task))
+            navigation.navigate('Main')
         } catch (e) {
             console.log(e)
         }
@@ -45,7 +43,7 @@ export default function Task({ route, navigation }) {
     const getTask = async () => {
         try {
             const value = await AsyncStorage.getItem(taskId)
-            setTask(JSON.parse(value))
+            dispatch(setAll(JSON.parse(value)))
         } catch (e) {
             console.log(e)
         }
@@ -83,7 +81,7 @@ export default function Task({ route, navigation }) {
                                     placeholder='Input title'
                                     style={styles.text}
                                     onChangeText={(newText) => {
-                                        setTask({...task, title: newText})
+                                        dispatch(setTitle(newText))
                                     }}
                                     />)
                                 :
@@ -96,10 +94,11 @@ export default function Task({ route, navigation }) {
                         task.changable ?
                             (<TextInput
                                 value={task.description}
-                                placeholder='Input title'
-                                style={styles.text} 
+                                placeholder='Input description'
+                                style={styles.text}
+                                multiline = {true} 
                                 onChangeText={(newText) => {
-                                    setTask({...task, description: newText})
+                                    dispatch(setDescription(newText))
                                 }}
                                 />)
                             :

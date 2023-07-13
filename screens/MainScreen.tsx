@@ -14,11 +14,10 @@ import {tasksSlice} from '../store/reducers/tasksSlice';
 
 
 export default function MainScreen({ navigation }) {
-    // const {tasks} = useAppSelector(state => state.tasksReducer);
-    // const {updateTasks} = tasksSlice.actions;
-    // const dispatch = useAppDispatch();
+    const {tasks} = useAppSelector(state => state.tasksReducer);
+    const {updateTasks} = tasksSlice.actions;
+    const dispatch = useAppDispatch();
     
-    const [tasks, updateTasks] = useState([])
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             getData()
@@ -38,7 +37,7 @@ export default function MainScreen({ navigation }) {
                     }
                 })
             }
-            (updateTasks(allTasks))
+            dispatch(updateTasks(allTasks))
         } catch (err) {
             console.error(err)
         }

@@ -1,13 +1,14 @@
-import { createSlice, PayloadAction} from "@reduxjs/toolkit"
+import { createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-type TaskFormState = {
+type AddTaskState = {
     title: string,
     description: string,
     isComplete: boolean,
     isChangeable: boolean,
 }
 
-const initialState: TaskFormState = {
+
+const initialState: AddTaskState = {
     title: '',
     description: '',
     isComplete: false,
@@ -15,25 +16,24 @@ const initialState: TaskFormState = {
 }
 
 export const addTaskSlice = createSlice({
-    name: 'addTask',
+    name: "addTask",
     initialState,
     reducers: {
-        setComplete (state) {
-            state.isComplete != state.isComplete
-        },
-
-        setChangeable (state) {
-            state.isChangeable != state.isChangeable
-        },
-
-        setTitle (state, action: PayloadAction<any>) {
+        setTitle (state, action: PayloadAction<string>){
             state.title = action.payload
         },
 
-        setDescription (state, action: PayloadAction<string>) {
+        setDescription (state, action: PayloadAction<string>){
             state.description = action.payload
-        }
+        },
 
+        setComplete (state, action: PayloadAction<boolean>){
+            state.isComplete = action.payload
+        },
+
+        setChangeable (state, action: PayloadAction<boolean>){
+            state.isChangeable = action.payload
+        },
     }
 })
 
